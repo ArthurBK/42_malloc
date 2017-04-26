@@ -6,7 +6,7 @@
 /*   By: abonneca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/05 16:23:33 by abonneca          #+#    #+#             */
-/*   Updated: 2016/12/20 17:25:55 by abonneca         ###   ########.fr       */
+/*   Updated: 2017/04/26 19:36:00 by abonneca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
-int get_next_line(const int fd, char **line);
+int					get_next_line(const int fd, char **line);
 int					ft_atoi(char *str);
 void				ft_bzero(void *s, size_t n);
 int					ft_isalnum(int c);
