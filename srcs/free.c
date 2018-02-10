@@ -6,7 +6,7 @@
 /*   By: abonneca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/19 15:26:04 by abonneca          #+#    #+#             */
-/*   Updated: 2017/04/26 18:25:13 by abonneca         ###   ########.fr       */
+/*   Updated: 2018/02/10 16:01:12 by abonneca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ void	free(void *ptr)
 					g_zones.tiny_zones = NULL;
 				if (g_zones.small_zones == zone_first)
 					g_zones.small_zones = NULL;
+				if (g_zones.large_zones == zone_first)
+					g_zones.large_zones = NULL;
 			}
 		}
 	}
