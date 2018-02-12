@@ -48,6 +48,27 @@ size_t	get_page_size(size_t size)
 		return (size + sizeof(t_zone));
 }
 
+
+char	checksum(t_zone *ptr)
+{
+	if (calculate_checksum(ptr) == ptr->checksum)
+		return (0);
+	return (1);	
+
+}
+
+unsigned char calculate_checksum(void *ptr)
+{ 
+	unsigned char res;
+
+	res = 0;
+	res += (unsigned char)(((t_zone *)ptr)->map);
+	res += (unsigned char)(((t_zone *)ptr)->next);
+	res += (unsigned char)(((t_zone *)ptr)->prev);
+	return(res % 256);
+	
+}
+
 void	*new_page(t_zone *zone_ptr, size_t size, t_zone *prev)
 {
 	void	*new_page;
@@ -72,6 +93,6 @@ void	*new_page(t_zone *zone_ptr, size_t size, t_zone *prev)
 	((t_zone *)new_page)->prev = prev;
 	((t_zone *)new_page)->free = 0;
 	((t_zone *)new_page)->is_new = 1;
-	((t_zone *)new_page)->checksum = 42;
+	((t_zone *)new_page)->checksum = calculate_checksum(new_page);
 	return (new_page);
 }

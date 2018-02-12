@@ -22,21 +22,13 @@ void	*get_page_start(t_zone *ptr)
 	return (ptr);
 }
 
-char	checksum(t_zone *ptr)
-{
-	
-	if (ptr->checksum == 42)
-		return (0);
-	return (1);
-}
-
 void	update_ptr(t_zone *ptr, t_zone *prev, char is_new, size_t size)
 {
 	ptr->prev = prev;
 	ptr->is_new = is_new;
 	ptr->size = size;
 	ptr->free = 0;
-	ptr->checksum = 42;
+	ptr->checksum = calculate_checksum(ptr);
 }
 
 char	valid_offset(t_zone *ptr, size_t size)
@@ -91,6 +83,7 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 			((t_zone *)zone_ptr)->next->map = get_page_start(zone_ptr);
 			//same here for checksum
 			update_ptr(zone_ptr->next, zone_ptr, 0, size);
+			update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, zone_ptr->size);
 			return ((void *)(zone_ptr->next) + sizeof(t_zone));
 		}
 //		if (!checksum(zone_ptr))
@@ -99,6 +92,7 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 		((t_zone *)zone_ptr)->next->map = ((t_zone *)zone_ptr)->next;
 		// interchanged lines to intro checksum
 		update_ptr(zone_ptr->next, zone_ptr, 1, size);
+		update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, zone_ptr->size);
 		return ((void *)(zone_ptr->next) + sizeof(t_zone));
 	}
 	else

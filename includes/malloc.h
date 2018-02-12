@@ -55,5 +55,7 @@ t_zone				*is_valid_zone(t_zone *zone_ptr, void *ptr);
 char				valid_offset(t_zone *ptr, size_t size);
 void				hex_min(uintmax_t v, unsigned int b);
 void				show_alloc_mem(void);
+unsigned char		calculate_checksum(void *ptr);
+char	checksum(t_zone *ptr);
 
 #endif
