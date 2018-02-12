@@ -45,7 +45,8 @@ size_t	get_page_size(size_t size)
 		return (rounded_size);
 	}
 	else
-		return (size + sizeof(t_zone));
+		return (size + sizeof(t_zone) + 16);
+// + 16 for padding
 }
 
 

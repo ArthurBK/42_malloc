@@ -42,6 +42,8 @@ char	valid_offset(t_zone *ptr, size_t size)
 			offset = (unsigned long)ptr->next - (unsigned long)ptr;
 		else
 			offset = (unsigned long)ptr - (unsigned long)ptr->next;
+		offset -= (16 - offset % 16);
+		//test for padding
 		if (offset >= sizeof(t_zone) + size)
 			return (1);
 		return (0);
@@ -53,6 +55,8 @@ char	valid_offset(t_zone *ptr, size_t size)
 			offset = (unsigned long)ptr - (unsigned long)page_start;
 		else
 			offset = (unsigned long)page_start - (unsigned long)ptr;
+		offset -= (16 - offset % 16);
+		//test for padding
 		if (get_page_size(size) > offset && (get_page_size(size) -
 					offset >= ptr->size + size + 2 * sizeof(t_zone)))
 			return (1);
@@ -62,6 +66,7 @@ char	valid_offset(t_zone *ptr, size_t size)
 
 void	*find_zone(t_zone *zone_ptr, size_t size)
 {
+	void *addr;
 	if (zone_ptr)
 	{
 		while (zone_ptr->next)
@@ -71,7 +76,7 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 			if (zone_ptr->free && valid_offset(zone_ptr, size))
 			{
 				update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, size);
-				return ((void *)zone_ptr + sizeof(t_zone));
+				return ((void *)zone_ptr + (16 - ((long int)zone_ptr + sizeof(t_zone))% 16) +sizeof(t_zone));
 			}
 			zone_ptr = zone_ptr->next;
 		}
@@ -84,7 +89,7 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 			//same here for checksum
 			update_ptr(zone_ptr->next, zone_ptr, 0, size);
 			update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, zone_ptr->size);
-			return ((void *)(zone_ptr->next) + sizeof(t_zone));
+			return ((void *)(zone_ptr->next) + (16 - ((long int)(zone_ptr->next) + sizeof(t_zone)) % 16) + sizeof(t_zone));
 		}
 //		if (!checksum(zone_ptr))
 //			return(NULL);
@@ -93,10 +98,13 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 		// interchanged lines to intro checksum
 		update_ptr(zone_ptr->next, zone_ptr, 1, size);
 		update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, zone_ptr->size);
-		return ((void *)(zone_ptr->next) + sizeof(t_zone));
+		return ((16 - ((long int)(zone_ptr->next) + sizeof(t_zone)) % 16) + (void *)(zone_ptr->next) + sizeof(t_zone));
 	}
 	else
-		return (new_page(zone_ptr, size, NULL) + sizeof(t_zone));
+	{	
+		addr = new_page(zone_ptr, size, NULL);
+		return (addr + (16 - ((long int)addr) % 16) + sizeof(t_zone));
+	}
 }
 
 void	*malloc(size_t size)
