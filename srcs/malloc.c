@@ -22,12 +22,21 @@ void	*get_page_start(t_zone *ptr)
 	return (ptr);
 }
 
+char	checksum(t_zone *ptr)
+{
+	
+	if (ptr->checksum == 42)
+		return (0);
+	return (1);
+}
+
 void	update_ptr(t_zone *ptr, t_zone *prev, char is_new, size_t size)
 {
 	ptr->prev = prev;
 	ptr->is_new = is_new;
 	ptr->size = size;
 	ptr->free = 0;
+	ptr->checksum = 42;
 }
 
 char	valid_offset(t_zone *ptr, size_t size)
@@ -65,6 +74,8 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 	{
 		while (zone_ptr->next)
 		{
+			if (checksum(zone_ptr))
+				return(NULL);
 			if (zone_ptr->free && valid_offset(zone_ptr, size))
 			{
 				update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, size);
@@ -74,14 +85,20 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 		}
 		if (valid_offset(zone_ptr, size))
 		{
+//			if (!checksum(zone_ptr))
+//				return(NULL);
 			zone_ptr->next = (void *)zone_ptr + zone_ptr->size + sizeof(t_zone);
-			update_ptr(zone_ptr->next, zone_ptr, 0, size);
 			((t_zone *)zone_ptr)->next->map = get_page_start(zone_ptr);
+			//same here for checksum
+			update_ptr(zone_ptr->next, zone_ptr, 0, size);
 			return ((void *)(zone_ptr->next) + sizeof(t_zone));
 		}
+//		if (!checksum(zone_ptr))
+//			return(NULL);
 		zone_ptr->next = new_page(zone_ptr, size, NULL);
-		update_ptr(zone_ptr->next, zone_ptr, 1, size);
 		((t_zone *)zone_ptr)->next->map = ((t_zone *)zone_ptr)->next;
+		// interchanged lines to intro checksum
+		update_ptr(zone_ptr->next, zone_ptr, 1, size);
 		return ((void *)(zone_ptr->next) + sizeof(t_zone));
 	}
 	else

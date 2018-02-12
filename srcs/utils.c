@@ -72,5 +72,6 @@ void	*new_page(t_zone *zone_ptr, size_t size, t_zone *prev)
 	((t_zone *)new_page)->prev = prev;
 	((t_zone *)new_page)->free = 0;
 	((t_zone *)new_page)->is_new = 1;
+	((t_zone *)new_page)->checksum = 42;
 	return (new_page);
 }

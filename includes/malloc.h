@@ -30,6 +30,7 @@ typedef struct		s_zone
 	struct s_zone	*map;
 	struct s_zone	*next;
 	struct s_zone	*prev;
+	unsigned char	checksum;
 	char			free:1;
 	char			is_new:1;
 }					t_zone;
