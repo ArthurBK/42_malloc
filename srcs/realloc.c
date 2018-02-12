@@ -21,7 +21,7 @@ void	*realloc_zone(t_zone *zone_ptr, void *ptr, size_t size)
 
 	large = g_zones.large_zones == zone_ptr ? 1 : 0;
 	if (!(zone_src = is_valid_zone(zone_ptr, ptr)))
-		return (NULL);
+		return (malloc(size));
 	page_ptr = get_page_start(zone_src);
 	if (!large && valid_offset(zone_src, size))
 	{
@@ -32,9 +32,9 @@ void	*realloc_zone(t_zone *zone_ptr, void *ptr, size_t size)
 	else
 	{
 		dest = malloc(size);
-		size = size < ((t_zone *)ptr)->size ? size : ((t_zone *)ptr)->size;
-		ft_memcpy((void *)dest, (void *)zone_src + sizeof(t_zone), size);
-		free((void *)zone_src + sizeof(t_zone));
+		size = size < ((t_zone *)(ptr - sizeof(t_zone)))->size ? size : ((t_zone *)(ptr - sizeof(t_zone)))->size;
+		ft_memcpy((void *)dest, (void *)zone_src, size);
+		free((void *)zone_src);
 		return ((void *)dest);
 	}
 	return (NULL);

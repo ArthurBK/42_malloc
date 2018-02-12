@@ -2,7 +2,7 @@ ifeq ($(HOSTTYPE),)
 HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 NAME 	=	libft_malloc_$(HOSTTYPE).so
-CC		=	clang
+CC		=	clang -g
 CFLAGS 	=	-Wall -Werror -Wextra
 INC		=	-I includes/ -I ./libft/includes/
 SRCS 	=	malloc.c\
