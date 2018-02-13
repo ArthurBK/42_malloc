@@ -60,13 +60,25 @@ char	checksum(t_zone *ptr)
 
 unsigned char calculate_checksum(void *ptr)
 { 
+	long int tmp;
 	unsigned char res;
+	unsigned long int i;
 
+	tmp = 0;
+	i = 0;
 	res = 0;
-	res += (unsigned char)(((t_zone *)ptr)->map);
-	res += (unsigned char)(((t_zone *)ptr)->next);
-	res += (unsigned char)(((t_zone *)ptr)->prev);
-	return(res % 256);
+	tmp += (long int)(((t_zone *)ptr));
+	tmp += *(long int *)ptr;
+	tmp += (long int)(((t_zone *)ptr)->map);
+	tmp += (long int)(((t_zone *)ptr)->next);
+	tmp += (long int)(((t_zone *)ptr)->prev);
+	
+	while (i < sizeof(long int))
+	{
+		tmp += (((unsigned char *)ptr)[i]);
+		i++;
+	}
+	return(tmp / 100 % 256);
 	
 }
 

@@ -69,7 +69,7 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 	void *addr;
 	if (zone_ptr)
 	{
-		while (zone_ptr->next)
+		while (!checksum(zone_ptr) && zone_ptr->next)
 		{
 			if (checksum(zone_ptr))
 				return(NULL);
@@ -80,10 +80,10 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 			}
 			zone_ptr = zone_ptr->next;
 		}
+		if (checksum(zone_ptr))
+			return(NULL);
 		if (valid_offset(zone_ptr, size))
 		{
-//			if (!checksum(zone_ptr))
-//				return(NULL);
 			zone_ptr->next = (void *)zone_ptr + zone_ptr->size + sizeof(t_zone);
 			((t_zone *)zone_ptr)->next->map = get_page_start(zone_ptr);
 			//same here for checksum
@@ -91,8 +91,6 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 			update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, zone_ptr->size);
 			return ((void *)(zone_ptr->next) + (16 - ((long int)(zone_ptr->next) + sizeof(t_zone)) % 16) + sizeof(t_zone));
 		}
-//		if (!checksum(zone_ptr))
-//			return(NULL);
 		zone_ptr->next = new_page(zone_ptr, size, NULL);
 		((t_zone *)zone_ptr)->next->map = ((t_zone *)zone_ptr)->next;
 		// interchanged lines to intro checksum
@@ -103,6 +101,7 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 	else
 	{	
 		addr = new_page(zone_ptr, size, NULL);
+		//update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, zone_ptr->size);
 		return (addr + (16 - ((long int)addr + sizeof(t_zone)) % 16) + sizeof(t_zone));
 	}
 }
