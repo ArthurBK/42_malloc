@@ -103,7 +103,7 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 	else
 	{	
 		addr = new_page(zone_ptr, size, NULL);
-		return (addr + (16 - ((long int)addr) % 16) + sizeof(t_zone));
+		return (addr + (16 - ((long int)addr + sizeof(t_zone)) % 16) + sizeof(t_zone));
 	}
 }
 
