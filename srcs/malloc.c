@@ -43,7 +43,6 @@ char	valid_offset(t_zone *ptr, size_t size)
 		else
 			offset = (unsigned long)ptr - (unsigned long)ptr->next;
 		offset -= (16 - offset % 16);
-		//test for padding
 		if (offset >= sizeof(t_zone) + size)
 			return (1);
 		return (0);
@@ -56,7 +55,6 @@ char	valid_offset(t_zone *ptr, size_t size)
 		else
 			offset = (unsigned long)page_start - (unsigned long)ptr;
 		offset -= (16 - offset % 16);
-		//test for padding
 		if (get_page_size(size) > offset && (get_page_size(size) -
 					offset >= ptr->size + size + 2 * sizeof(t_zone)))
 			return (1);
@@ -86,7 +84,6 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 		{
 			zone_ptr->next = (void *)zone_ptr + zone_ptr->size + sizeof(t_zone);
 			((t_zone *)zone_ptr)->next->map = get_page_start(zone_ptr);
-			//same here for checksum
 			update_ptr(zone_ptr->next, zone_ptr, 0, size);
 			update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, zone_ptr->size);
 			return ((void *)(zone_ptr->next) + (16 - ((long int)(zone_ptr->next) + sizeof(t_zone)) % 16) + sizeof(t_zone));
@@ -101,7 +98,6 @@ void	*find_zone(t_zone *zone_ptr, size_t size)
 	else
 	{	
 		addr = new_page(zone_ptr, size, NULL);
-		//update_ptr(zone_ptr, zone_ptr->prev, zone_ptr->is_new, zone_ptr->size);
 		return (addr + (16 - ((long int)addr + sizeof(t_zone)) % 16) + sizeof(t_zone));
 	}
 }
