@@ -18,11 +18,11 @@ t_zone	*is_valid_zone(t_zone *zone_ptr, void *ptr)
 	{
 		while (zone_ptr->next)
 		{
-			if ((void *)zone_ptr + sizeof(t_zone) == ptr)
+			if ((void *)zone_ptr + sizeof(t_zone) + 16 - (long int)zone_ptr % 16== ptr)
 				return (zone_ptr);
 			zone_ptr = zone_ptr->next;
 		}
-		if ((void *)zone_ptr + sizeof(t_zone) == ptr)
+		if ((void *)zone_ptr + sizeof(t_zone) + 16 - (long int)zone_ptr % 16 == ptr)
 			return (zone_ptr);
 	}
 	return (NULL);

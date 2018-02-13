@@ -27,7 +27,7 @@ void	*realloc_zone(t_zone *zone_ptr, void *ptr, size_t size)
 	{
 		zone_src->size = size;
 		zone_src->free = 0;
-		return ((void *)zone_src + sizeof(t_zone));
+		return ((void *)zone_src + 16 - (long int)zone_src % 16+ sizeof(t_zone));
 	}
 	else
 	{
@@ -42,9 +42,10 @@ void	*realloc_zone(t_zone *zone_ptr, void *ptr, size_t size)
 
 void	*realloc(void *ptr, size_t size)
 {
-	if (ptr == NULL)
+(void)ptr;
+//	if (ptr == NULL)
 		return (malloc(size));
-	if (size > 0)
+/*	if (size > 0)
 	{
 		if (size < N)
 			return (realloc_zone(g_zones.tiny_zones, ptr, size));
@@ -53,5 +54,5 @@ void	*realloc(void *ptr, size_t size)
 		else
 			return (realloc_zone(g_zones.large_zones, ptr, size));
 	}
-	return (NULL);
+	return (NULL);*/
 }
