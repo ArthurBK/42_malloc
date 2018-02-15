@@ -54,7 +54,8 @@ char	valid_offset(t_zone *ptr, size_t size)
 			offset = (unsigned long)ptr - (unsigned long)page_start;
 		else
 			offset = (unsigned long)page_start - (unsigned long)ptr;
-		offset -= (16 - offset % 16);
+		if (offset > 15)
+			offset -= (16 - offset % 16);
 		if (get_page_size(size) > offset && (get_page_size(size) -
 					offset >= ptr->size + size + 2 * sizeof(t_zone)))
 			return (1);
